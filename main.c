@@ -14,10 +14,9 @@
 #include <stdbool.h>
 #include "main.h"
 
-#define WHEEL_PIN 2
-#define BTN_PIN 4
-#define TEMP_PIN A1
-#define LED_PIN 5
+#define WHEEL_PIN PB1
+#define BTN_PIN PB3
+#define LED_PIN PB4
 #define LONG_PRESS_TIME 750
 #define WHEEL_ROTATION_MAX 5
 #define WHEEL_RPM_MAX 600
@@ -26,8 +25,7 @@
 #define MENU_RPM 2
 #define MENU_POWER 3
 #define MENU_VOLTAGE 4
-#define MENU_TEMP 5
-#define MENU_LED 6
+#define MENU_LED 5
 
 uint8_t EEMEM EEPROM_WHEEL_DIAMETER;
 uint8_t EEMEM EEPROM_PWR_SAVE_MODE;
@@ -138,14 +136,18 @@ void attach_wheel_interrupt() {
 	// the rising edge of INT0 generates an interrupt
 	MCUCR |= _BV(ISC00) | _BV(ISC01);
 	
-	// enable INT0
-	GIMSK |= _BV(INT0);
+	// enable pin change interrupt
+	GIMSK |= _BV(PCIE);
+	
+	// enable interrupt on PB1
+	PCMSK |= _BV(PCINT1);
 	
 	sei();
 }
 
-ISR(INT0_vect) {
+ISR(INT0_vect) { // fixme
 	wheel_rotated = true;
+	// todo wheel_rotation_last_time
 }
 
 void calc_wheel_length() {
@@ -236,14 +238,6 @@ void display_data() {
 			display.print(buf);
 			break;
 
-		case MENU_TEMP:
-			display.setCursor(0, 0);
-			display.print("temp:");
-
-			snprintf(buf, BUF_SIZE, "%d v", read_temp());
-			display.print(buf);
-			break;
-
 		case MENU_LED:
 			display.setCursor(0, 0);
 			display.print("led:");
@@ -257,33 +251,7 @@ void display_data() {
 	*/
 }
 
-int8_t read_temp() {
-	// use internal 1.1V Voltage Reference
-	ADMUX = _BV(REFS1);
-
-	// enable ADC
-	ADCSRA |= _BV(ADEN);
-	
-	// set division factor 64
-	// so adc freq is 125 kHz (8 Mhz / 64)
-	ADCSRA |= _BV(ADPS2) | _BV(ADPS1);
-
-	// start conversion
-	ADCSRA |= (ADSC);
-
-	// waiting for the end of the conversion
-	loop_until_bit_is_set(ADCSRA, ADSC);
-
-	uint16_t reading = (ADCH << 8) | ADCL;
-
-	float voltage = reading * 5.0;
-	voltage /= 1024.0;
-
-	return (voltage - 0.5) * 100;
-}
-
-float read_voltage() {
-	// fixme
+float read_voltage() { // fixme
 	// Read 1.1V reference against AVcc
 	ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
 	_delay_ms(2); // Wait for Vref to settle
@@ -291,8 +259,7 @@ float read_voltage() {
 	ADCSRA |= _BV(ADSC); // Convert
 	loop_until_bit_is_clear(ADCSRA, ADSC);
 	
-	uint32_t result = ADCL;
-	result |= ADCH << 8;
+	uint32_t result = (ADCH << 8) | ADCL;
 	result = 1126400L / result; // Back-calculate AVcc in mV
 	return result / 1000.0;
 }
@@ -332,7 +299,7 @@ void calc_avg_speed(float speed) {
 	}
 }
 
-void turn_led(bool on) {
+void turn_led(bool on) { // fixme
 	led_turned = on;
 	/*
 	TCCR1A = 0;
