@@ -4,41 +4,46 @@
  * Created: 08.07.2020 1:39:18
  * Author : alex
  */
-#define F_CPU 8000000L
+#define F_CPU 8000000UL
 
 #include <avr/io.h>
 #include <avr/sfr_defs.h>
 #include <avr/interrupt.h>
 #include <avr/eeprom.h>
+#include <avr/sleep.h>
 #include <util/delay.h>
+#include <util/atomic.h>
 #include <stdbool.h>
-#include "main.h"
+// #include <stdio.h>
+#include "utils.h"
+#include "ssd1306/ssd1306xled.h"
+#include "ssd1306/ssd1306xledtx.h"
+#include "ssd1306/font6x8.h"
 
 #define WHEEL_PIN PB1
 #define BTN_PIN PB3
 #define LED_PIN PB4
-#define LONG_PRESS_TIME 750
+#define LONG_PRESS_TIME 500
 #define WHEEL_ROTATION_MAX 5
 #define WHEEL_RPM_MAX 600
 #define MENU_MAIN 0
 #define MENU_SPEED 1
 #define MENU_RPM 2
 #define MENU_POWER 3
-#define MENU_VOLTAGE 4
-#define MENU_LED 5
+#define MENU_LED 4
 
 uint8_t EEMEM EEPROM_WHEEL_DIAMETER;
 uint8_t EEMEM EEPROM_PWR_SAVE_MODE;
 uint8_t EEMEM EEPROM_LED_AUTO;
 
-uint32_t millis;
-
+volatile uint32_t ms;
 bool display_turned;
 bool pwr_save_mode;
 uint8_t display_menu;
-bool sleep_mode;
 bool led_turned;
 bool led_auto;
+char buf[11];
+char str_tmp[6];
 
 bool btn_pressed;
 bool btn_long_pressed;
@@ -59,20 +64,53 @@ float avg_speed; // km/h
 float speed_arr[5];
 uint8_t speed_arr_index;
 
+void start_millis_timer();
+uint32_t millis();
+void attach_wheel_interrupt();
+void calc_wheel_length();
+void display_data();
+void calc_wheel_length();
+void set_wheel_diameter(uint8_t diameter);
+void turn_display(bool on);
+void switch_display_menu();
+void display_data();
+void enable_pwr_save_mode(bool enable);
+void enable_sleep_mode();
+void calc_avg_speed(float speed);
+void turn_led(bool on);
+void handle_btn_click(uint8_t pin_state, uint32_t timer_now);
+void calc_speed(uint32_t timer_now);
+
 int main(void) {
+	CLKPR = 1 << CLKPCE;
+	CLKPR = 0;
+	
+	_delay_ms(100);
+	ssd1306_init();
+	ssd1306tx_init(ssd1306xled_font6x8data, ' ');
+
+	ssd1306_clear();
+	ssd1306_setpos(0, 0);
+	ssd1306tx_string("Hello!");
+	
 	// turn on btn pin input pullup
 	PORTB |= _BV(BTN_PIN);
 	
 	// led pin as output
 	DDRB |= _BV(LED_PIN);
 	
+	// disable USI
+	PRR |= _BV(PRUSI);
+	
 	attach_wheel_interrupt();
+	start_millis_timer();
 	
 	display_turned = true;
 
 	pwr_save_mode = eeprom_read_byte(&EEPROM_PWR_SAVE_MODE);
 	led_auto = eeprom_read_byte(&EEPROM_LED_AUTO);
 	if (led_auto) {
+		// todo
 		// get current time
 		// turn led
 	}
@@ -83,19 +121,11 @@ int main(void) {
 	unsigned long timer_now;
     
     while (1) {
-		if (sleep_mode) {
-			sleep_mode = false;
-			turn_display(true);
-		}
-
-		// timer_now = millis();
-		timer_now = 0;
+		timer_now = millis();
 		
-		handle_btn_click(PINB & _BV(BTN_PIN), timer_now);
-		// handle_btn_click(digitalRead(BTN_PIN), timer_now);
-
 		if (wheel_rotated) {
 			wheel_rotated = false;
+			
 			wheel_rotation_last_time = timer_now;
 			if (wheel_rotation_start_time == 0) {
 				wheel_rotation_start_time = timer_now;
@@ -104,6 +134,9 @@ int main(void) {
 			wheel_rotation_counter++;
 			distance += wheel_length;
 		}
+		
+		handle_btn_click(PINB & _BV(BTN_PIN), timer_now);
+		// handle_btn_click(digitalRead(BTN_PIN), timer_now);
 
 		calc_speed(timer_now);
 		
@@ -126,13 +159,13 @@ int main(void) {
 			}
 		}
 
-		_delay_ms(2);
+		_delay_ms(1);
     }
 }
 
 void attach_wheel_interrupt() {
 	cli();
-	
+
 	// the rising edge of INT0 generates an interrupt
 	MCUCR |= _BV(ISC00) | _BV(ISC01);
 	
@@ -141,13 +174,44 @@ void attach_wheel_interrupt() {
 	
 	// enable interrupt on PB1
 	PCMSK |= _BV(PCINT1);
+
+	sei();
+}
+
+ISR(PCINT0_vect) {
+	wheel_rotated = true;
+}
+
+void start_millis_timer() {
+	cli();
+	
+	// set timer0 CTC mode
+	TCCR0A |= _BV(WGM01);
+	
+	// set timer0 compare value
+	OCR0A = 125;
+	
+	// set timer0 prescaler 64
+	TCCR0B |= _BV(CS00) | _BV(CS01);
+	
+	// enable interrupt
+	TIMSK |= _BV(OCIE0A);
 	
 	sei();
 }
 
-ISR(INT0_vect) { // fixme
-	wheel_rotated = true;
-	// todo wheel_rotation_last_time
+ISR(TIMER0_COMPA_vect) {
+	ms++;
+}
+
+uint32_t millis() {
+	uint32_t copy;
+
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+		copy = ms;
+	}
+	
+	return copy;
 }
 
 void calc_wheel_length() {
@@ -167,7 +231,7 @@ void set_wheel_diameter(uint8_t diameter) {
 
 void turn_display(bool on) {
 	display_turned = on;
-	//display.ssd1306_command(on ? SSD1306_DISPLAYON : SSD1306_DISPLAYOFF);
+	ssd1306_turn_display(on);
 }
 
 void switch_display_menu() {
@@ -177,91 +241,68 @@ void switch_display_menu() {
 	}
 }
 
+// NOTE: Screen width - 128, that is 21 symbols per row.
 void display_data() {
-	/*
-	display.clearDisplay();
-	display.setTextSize(2);
-	display.setTextColor(SSD1306_WHITE);
+	ssd1306_clear();
 
 	switch(display_menu) {
 		case MENU_MAIN:
 			// speed
-			display.setCursor(0, 0);
-			dtostrf(speed, 4, 1, str_tmp);
-			snprintf(buf, BUF_SIZE, "%s km/h", str_tmp);
-			display.print(buf);
+			ssd1306_setpos(0, 0);
+			// dtostrf(speed, 4, 1, str_tmp);
+			ftoa(str_tmp, speed, 1);
+			// dtostrf(speed, 4, 1, str_tmp);
+			// sprintf(buf, "%.1f km/h", speed);
+			ssd1306tx_string(str_tmp);
 
 			// distance
-			display.setCursor(0, 16);
-			dtostrf(distance, 4, 2, str_tmp);
-			snprintf(buf, BUF_SIZE, "%s km", str_tmp);
-			display.print(buf);
+			ssd1306_setpos(0, 16);
+			// dtostrf(distance, 4, 2, str_tmp);
+			ftoa(str_tmp, distance, 2);
+			//sprintf(buf, "%s km", str_tmp);
+			ssd1306tx_string(str_tmp);
 			break;
 		
 		case MENU_SPEED:
 			// max speed
-			display.setCursor(0, 0);
-			dtostrf(max_speed, 4, 1, str_tmp);
-			snprintf(buf, BUF_SIZE, "%s km/h", str_tmp);
-			display.print(buf);
+			ssd1306_setpos(0, 0);
+			// dtostrf(max_speed, 4, 1, str_tmp);
+			ftoa(str_tmp, max_speed, 1);
+			//sprintf(buf, "%s km/h", str_tmp);
+			ssd1306tx_string(str_tmp);
 		
 			// avg speed
-			display.setCursor(0, 16);
-			dtostrf(avg_speed, 4, 1, str_tmp);
-			snprintf(buf, BUF_SIZE, "%s km/h", str_tmp);
-			display.print(buf);
+			ssd1306_setpos(0, 16);
+			// dtostrf(avg_speed, 4, 1, str_tmp);
+			ftoa(str_tmp, avg_speed, 1);
+			//sprintf(buf, "%s km/h", str_tmp);
+			ssd1306tx_string(str_tmp);
 			break;
 
 		case MENU_RPM:
 			// rpm
-			display.setCursor(0, 0);
-			snprintf(buf, BUF_SIZE, "%d rpm", wheel_rpm);
-			display.print(buf);
+			ssd1306_setpos(0, 0);
+			itoa(wheel_rpm, str_tmp, 10);
+			//sprintf(buf, "%d rpm", wheel_rpm);
+			ssd1306tx_string(str_tmp);
 			break;
 		
 		case MENU_POWER: // power save mode
-			display.setCursor(0, 0);
-			display.print("pwr save:");
+			ssd1306_setpos(0, 0);
+			ssd1306tx_string("pwr save:");
 
-			display.setCursor(0, 16);
-			display.print(pwr_save_mode ? "on" : "off");
-			break;
-
-		case MENU_VOLTAGE: // input voltage
-			display.setCursor(0, 0);
-			display.print("voltage:");
-
-			dtostrf(read_voltage(), 4, 1, str_tmp);
-			snprintf(buf, BUF_SIZE, "%s v", str_tmp);
-
-			display.setCursor(0, 16);
-			display.print(buf);
+			ssd1306_setpos(0, 16);
+			ssd1306tx_string(pwr_save_mode ? "on" : "off");
 			break;
 
 		case MENU_LED:
-			display.setCursor(0, 0);
-			display.print("led:");
+			ssd1306_setpos(0, 0);
+			ssd1306tx_string("led:");
 
-			display.setCursor(0, 16);
-			display.print(led_turned ? "on" : "off");
+			ssd1306_setpos(0, 16);
+			ssd1306tx_string(led_turned ? "on" : "off");
 			break;
 	}
-
-	display.display();
-	*/
-}
-
-float read_voltage() { // fixme
-	// Read 1.1V reference against AVcc
-	ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
-	_delay_ms(2); // Wait for Vref to settle
-	
-	ADCSRA |= _BV(ADSC); // Convert
-	loop_until_bit_is_clear(ADCSRA, ADSC);
-	
-	uint32_t result = (ADCH << 8) | ADCL;
-	result = 1126400L / result; // Back-calculate AVcc in mV
-	return result / 1000.0;
 }
 
 void enable_pwr_save_mode(bool enable) {
@@ -271,61 +312,50 @@ void enable_pwr_save_mode(bool enable) {
 
 void enable_sleep_mode() {
 	turn_display(false);
-	turn_led(false);
-	sleep_mode = true;
-	// LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF);
+	
+	// turn off led
+	PORTB &= ~_BV(LED_PIN);
+	
+	set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+	cli();
+	sleep_enable();
+	sleep_bod_disable();
+	sei();
+	sleep_cpu();
+
+	sleep_disable();
+	sei();
 }
 
-void calc_avg_speed(float speed) {
-	if (speed == 0) {
-		return;
-	}
-	
-	speed_arr[speed_arr_index++] = speed;
-	
-	if (speed_arr_index == 5) {
-		speed_arr_index = 0;
-		float sum = 0;
-		for (uint8_t i = 0; i < 5; i++) {
-			sum += speed_arr[i];
-		}
-		
-		sum /= 5;
-		if (avg_speed == 0) {
-			avg_speed = sum;
-		} else {
-			avg_speed = (avg_speed + sum) / 2;
-		}
-	}
-}
-
-void turn_led(bool on) { // fixme
+void turn_led(bool on) {
 	led_turned = on;
-	/*
-	TCCR1A = 0;
-	TCCR1B = 0;
-	TCNT1 = 0;
-
+	
+	TCCR1 = 0;
+	OCR1C = 0;
+	TIMSK = 0;
+	
 	if (on) {
-		// disable interrupts
 		cli();
-
-		// set ctc mode
-		TCCR1B |= (1<<WGM12);
-
-		// set counter max value for 250 ms
-		OCR1A = 3906; // 1953
 		
-		// set 1024 prescaler
-		TCCR1B |= (1<<CS12) | (1<<CS10);
+		// set timer1 CTC mode
+		TCCR1 |= _BV(CTC1);
+		
+		// set timer1 compare value
+		OCR1C = 244;
+		
+		// set timer1 prescaler 8192
+		TCCR1 |= _BV(CS11) | _BV(CS12) | _BV(CS13);
+		
+		// enable interrupt
+		TIMSK |= _BV(OCIE1A);
 
-		// enable timer compare interrupt
-		TIMSK1 |= (1<<OCIE1A);
-
-		// allow interrupts
 		sei();
 	}
-	*/
+}
+
+// toggle led every 250 ms
+ISR(TIMER1_COMPA_vect) {
+	PORTB ^= _BV(LED_PIN);
 }
 
 void handle_btn_click(uint8_t pin_state, uint32_t timer_now) {
@@ -367,10 +397,6 @@ void handle_btn_click(uint8_t pin_state, uint32_t timer_now) {
 	}
 }
 
-void detect_rotation() {
-	wheel_rotated = true;
-}
-
 void calc_speed(uint32_t timer_now) {
 	if (wheel_rotation_counter == WHEEL_ROTATION_MAX) {
 		uint32_t interval = timer_now - wheel_rotation_start_time;
@@ -390,5 +416,28 @@ void calc_speed(uint32_t timer_now) {
 
 		wheel_rotation_counter = 0;
 		wheel_rotation_start_time = 0;
+	}
+}
+
+void calc_avg_speed(float speed) {
+	if (speed == 0) {
+		return;
+	}
+	
+	speed_arr[speed_arr_index++] = speed;
+	
+	if (speed_arr_index == 5) {
+		speed_arr_index = 0;
+		float sum = 0;
+		for (uint8_t i = 0; i < 5; i++) {
+			sum += speed_arr[i];
+		}
+		
+		sum /= 5;
+		if (avg_speed == 0) {
+			avg_speed = sum;
+			} else {
+			avg_speed = (avg_speed + sum) / 2;
+		}
 	}
 }
