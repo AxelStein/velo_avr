@@ -4,7 +4,7 @@
  * Created: 08.07.2020 1:39:18
  * Author : alex
  */
-#define F_CPU 1000000L
+#define F_CPU 8000000L
 
 #include <avr/io.h>
 #include <avr/sfr_defs.h>
@@ -32,6 +32,8 @@
 uint8_t EEMEM EEPROM_WHEEL_DIAMETER;
 uint8_t EEMEM EEPROM_PWR_SAVE_MODE;
 uint8_t EEMEM EEPROM_LED_AUTO;
+
+uint32_t millis;
 
 bool display_turned;
 bool pwr_save_mode;
@@ -256,19 +258,32 @@ void display_data() {
 }
 
 int8_t read_temp() {
-	ADMUX = 0;
-	// int reading = analogRead(TEMP_PIN);
-	int reading = 0;
+	// use internal 1.1V Voltage Reference
+	ADMUX = _BV(REFS1);
 
-	// преобразовываем полученные данные в напряжение. Если используем Arduino 3.3 В, то меняем константу на 3.3
+	// enable ADC
+	ADCSRA |= _BV(ADEN);
+	
+	// set division factor 64
+	// so adc freq is 125 kHz (8 Mhz / 64)
+	ADCSRA |= _BV(ADPS2) | _BV(ADPS1);
+
+	// start conversion
+	ADCSRA |= (ADSC);
+
+	// waiting for the end of the conversion
+	loop_until_bit_is_set(ADCSRA, ADSC);
+
+	uint16_t reading = (ADCH << 8) | ADCL;
+
 	float voltage = reading * 5.0;
 	voltage /= 1024.0;
 
-	//конвертируем 10 мВ на градус с учетом отступа 500 мВ
 	return (voltage - 0.5) * 100;
 }
 
 float read_voltage() {
+	// fixme
 	// Read 1.1V reference against AVcc
 	ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
 	_delay_ms(2); // Wait for Vref to settle
