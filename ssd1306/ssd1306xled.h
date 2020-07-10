@@ -35,7 +35,7 @@
 
 // ----------------------------------------------------------------------------
 
-void ssd1306_init(void);
+void ssd1306_init();
 void ssd1306_setpos(uint8_t x, uint8_t y);
 void ssd1306_fill4(uint8_t, uint8_t, uint8_t, uint8_t);
 void ssd1306_turn_display(bool on);
