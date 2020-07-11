@@ -14,8 +14,6 @@
 #include <util/delay.h>
 #include <util/atomic.h>
 #include <stdbool.h>
-// #include <stdio.h>
-#include "utils.h"
 #include "ssd1306/ssd1306xled.h"
 #include "ssd1306/ssd1306xledtx.h"
 #include "ssd1306/font6x8.h"
@@ -42,8 +40,6 @@ bool pwr_save_mode;
 uint8_t display_menu;
 bool led_turned;
 bool led_auto;
-char buf[11];
-char str_tmp[6];
 
 bool btn_pressed;
 bool btn_long_pressed;
@@ -87,11 +83,10 @@ int main(void) {
 	
 	_delay_ms(100);
 	ssd1306_init();
-	ssd1306tx_init(ssd1306xled_font6x8data, ' ');
-
+	ssd1306tx_init(ssd1306xled_font6x8data);
 	ssd1306_clear();
-	ssd1306_setpos(0, 0);
-	ssd1306tx_string("Hello!");
+	ssd1306_fill(0xFF);
+	_delay_ms(1000);
 	
 	// turn on btn pin input pullup
 	PORTB |= _BV(BTN_PIN);
@@ -100,7 +95,7 @@ int main(void) {
 	DDRB |= _BV(LED_PIN);
 	
 	// disable USI
-	PRR |= _BV(PRUSI);
+	// PRR |= _BV(PRUSI);
 	
 	attach_wheel_interrupt();
 	start_millis_timer();
@@ -247,47 +242,32 @@ void display_data() {
 
 	switch(display_menu) {
 		case MENU_MAIN:
-			// speed
 			ssd1306_setpos(0, 0);
-			// dtostrf(speed, 4, 1, str_tmp);
-			ftoa(str_tmp, speed, 1);
-			// dtostrf(speed, 4, 1, str_tmp);
-			// sprintf(buf, "%.1f km/h", speed);
-			ssd1306tx_string(str_tmp);
+			ssd1306tx_float(speed, 1);
+			ssd1306tx_string(" km/h");
 
-			// distance
 			ssd1306_setpos(0, 16);
-			// dtostrf(distance, 4, 2, str_tmp);
-			ftoa(str_tmp, distance, 2);
-			//sprintf(buf, "%s km", str_tmp);
-			ssd1306tx_string(str_tmp);
+			ssd1306tx_float(distance, 2);
+			ssd1306tx_string(" km");
 			break;
 		
 		case MENU_SPEED:
-			// max speed
 			ssd1306_setpos(0, 0);
-			// dtostrf(max_speed, 4, 1, str_tmp);
-			ftoa(str_tmp, max_speed, 1);
-			//sprintf(buf, "%s km/h", str_tmp);
-			ssd1306tx_string(str_tmp);
-		
-			// avg speed
+			ssd1306tx_float(max_speed, 1);
+			ssd1306tx_string(" km/h");
+
 			ssd1306_setpos(0, 16);
-			// dtostrf(avg_speed, 4, 1, str_tmp);
-			ftoa(str_tmp, avg_speed, 1);
-			//sprintf(buf, "%s km/h", str_tmp);
-			ssd1306tx_string(str_tmp);
+			ssd1306tx_float(avg_speed, 1);
+			ssd1306tx_string(" km/h");
 			break;
 
 		case MENU_RPM:
-			// rpm
 			ssd1306_setpos(0, 0);
-			itoa(wheel_rpm, str_tmp, 10);
-			//sprintf(buf, "%d rpm", wheel_rpm);
-			ssd1306tx_string(str_tmp);
+			ssd1306tx_int(wheel_rpm);
+			ssd1306tx_string(" rpm");
 			break;
 		
-		case MENU_POWER: // power save mode
+		case MENU_POWER:
 			ssd1306_setpos(0, 0);
 			ssd1306tx_string("pwr save:");
 

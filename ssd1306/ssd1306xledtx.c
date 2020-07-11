@@ -22,62 +22,22 @@
 extern void ssd1306_start_data();	// Initiate transmission of data
 extern void ssd1306_data_byte(uint8_t);	// Transmission 1 byte of data
 extern void ssd1306_stop();			// Finish transmission
+char* ftoa(float f, int precision, char* a);
+char* itoa(int value, char* result, int base);
 
-uint8_t* ssd1306tx_font_src;
+const uint8_t *ssd1306tx_font_src;
+char str_buf[10];
 
-void ssd1306tx_set_font(uint8_t* font) {
+void ssd1306tx_init(const uint8_t *font) {
 	ssd1306tx_font_src = font;
 }
 
-/* itoa:  конвертируем n в символы в s */
-void itoa(int n, char s[]) {
-	int i, j, sign;
-
-	if ((sign = n) < 0)  /* записываем знак */
-		n = -n;          /* делаем n положительным числом */
-	i = 0;
-	do {       /* генерируем цифры в обратном порядке */
-		s[i++] = n % 10 + '0';   /* берем следующую цифру */
-	} while ((n /= 10) > 0);     /* удаляем */
-
-	if (sign < 0)
-		s[i++] = '-';
-	s[i] = '\0';
-
-	char c;
-	for (i = 0, j = strlen(s)-1; i<j; i++, j--) {
-		c = s[i];
-		s[i] = s[j];
-		s[j] = c;
-	}
+void ssd1306tx_float(float n, int precision) {
+	ssd1306tx_string(ftoa(n, precision, str_buf));
 }
 
-void ssd1306tx_num(int num) {
-	bool negative = num < 0;
-	num *= -1;
-
-	char buf[15];
-	uint8_t i = 0;
-	do {
-		buf[i++] = num % 10 + '0';
-	} while ((num /= 10) > 0);
-	if (negative) {
-		buf[i++] = '-';
-	}
-	buf[i] = 's';
-	printf("%s", buf);
-	for (uint8_t start = 0, i = 14; i < 255; i++) {
-		if (start) {
-			printf("%c", buf[i]);
-		} else if (buf[i] == 's') {
-			start = 1;
-		}
-	}
-	/*
-	for (i = 11; i < 255; i--) {
-		printf("%c", buf[i]);
-	}
-	*/
+void ssd1306tx_int(int n) {
+	ssd1306tx_string(itoa(n, str_buf, 10));
 }
 
 void ssd1306tx_char(char ch) {
@@ -89,8 +49,50 @@ void ssd1306tx_char(char ch) {
 	ssd1306_stop();
 }
 
-void ssd1306tx_string(char *s) {
+void ssd1306tx_string(char* s) {
 	while (*s) {
 		ssd1306tx_char(*s++);
 	}
+}
+
+/**
+* C++ version 0.4 char* style "itoa":
+* Written by Lukas Chmela
+* Released under GPLv3.
+*/
+char* itoa(int value, char* result, int base) {
+	char* ptr = result, *ptr1 = result, tmp_char;
+	int tmp_value;
+
+	do {
+		tmp_value = value;
+		value /= base;
+		*ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz"[35 + (tmp_value - value * base)];
+	} while (value);
+
+	// Apply negative sign
+	if (tmp_value < 0) *ptr++ = '-';
+	*ptr-- = '\0';
+	while (ptr1 < ptr) {
+		tmp_char = *ptr;
+		*ptr--= *ptr1;
+		*ptr1++ = tmp_char;
+	}
+	return result;
+}
+
+long abs_val(long v) {
+	return v < 0 ? -v : v;
+}
+
+char* ftoa(float f, int precision, char* a) {
+	long p[] = {0, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000};
+	char* ret = a;
+	long number = (long) f;
+	itoa(number, a, 10);
+	while (*a != '\0') a++;
+	*a++ = '.';
+	long decimal = abs_val((long)((f - number) * p[precision]));
+	itoa(decimal, a, 10);
+	return ret;
 }

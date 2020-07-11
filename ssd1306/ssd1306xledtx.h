@@ -16,15 +16,13 @@
 #ifndef SSD1306XLEDTX_H
 #define SSD1306XLEDTX_H
 
-// ----------------------------------------------------------------------------
-
 extern uint8_t *ssd1306xled_font6x8;
 extern uint8_t *ssd1306xled_font8x16;
-
 // ----------------------------------------------------------------------------
 
-void ssd1306tx_init(const uint8_t *fron_src, uint8_t char_base);
-
+void ssd1306tx_init(const uint8_t *font);
+void ssd1306tx_float(float n, int precision);
+void ssd1306tx_int(int n);
 void ssd1306tx_char(char ch);
 void ssd1306tx_string(char *s);
 
