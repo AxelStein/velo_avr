@@ -18,7 +18,7 @@
 #include "ssd1306/ssd1306xledtx.h"
 #include "ssd1306/font6x8.h"
 
-#define WHEEL_PIN PB1
+#define WHEEL_PIN PB2
 #define BTN_PIN PB3
 #define LED_PIN PB4
 #define LONG_PRESS_TIME 500
@@ -81,21 +81,12 @@ int main(void) {
 	CLKPR = 1 << CLKPCE;
 	CLKPR = 0;
 	
-	_delay_ms(100);
-	ssd1306_init();
-	ssd1306tx_init(ssd1306xled_font6x8data);
-	ssd1306_clear();
-	ssd1306_fill(0xFF);
-	_delay_ms(1000);
-	
-	// turn on btn pin input pullup
-	PORTB |= _BV(BTN_PIN);
-	
+	DDRB = 0;
 	// led pin as output
 	DDRB |= _BV(LED_PIN);
 	
-	// disable USI
-	// PRR |= _BV(PRUSI);
+	// turn on btn pin input pullup
+	PORTB |= _BV(BTN_PIN);
 	
 	attach_wheel_interrupt();
 	start_millis_timer();
@@ -114,6 +105,13 @@ int main(void) {
 	display_data();
 	
 	unsigned long timer_now;
+	
+	_delay_ms(100);
+	ssd1306_init();
+	ssd1306tx_init(ssd1306xled_font6x8data);
+	ssd1306_clear();
+	// ssd1306_fill(0xFF);
+	_delay_ms(1000);
     
     while (1) {
 		timer_now = millis();
@@ -164,17 +162,16 @@ void attach_wheel_interrupt() {
 	// the rising edge of INT0 generates an interrupt
 	MCUCR |= _BV(ISC00) | _BV(ISC01);
 	
-	// enable pin change interrupt
-	GIMSK |= _BV(PCIE);
-	
-	// enable interrupt on PB1
-	PCMSK |= _BV(PCINT1);
+	// enable external interrupt
+	GIMSK |= _BV(INT0);
 
 	sei();
 }
 
-ISR(PCINT0_vect) {
+ISR(INT0_vect) {
 	wheel_rotated = true;
+	// TODO remove
+	PORTB ^= _BV(LED_PIN);
 }
 
 void start_millis_timer() {
@@ -243,20 +240,24 @@ void display_data() {
 	switch(display_menu) {
 		case MENU_MAIN:
 			ssd1306_setpos(0, 0);
+			ssd1306tx_string("s: ");
 			ssd1306tx_float(speed, 1);
 			ssd1306tx_string(" km/h");
 
-			ssd1306_setpos(0, 16);
+			ssd1306_setpos(0, 10);
+			ssd1306tx_string("d: ");
 			ssd1306tx_float(distance, 2);
 			ssd1306tx_string(" km");
 			break;
 		
 		case MENU_SPEED:
 			ssd1306_setpos(0, 0);
+			ssd1306tx_string("ms: ");
 			ssd1306tx_float(max_speed, 1);
 			ssd1306tx_string(" km/h");
 
-			ssd1306_setpos(0, 16);
+			ssd1306_setpos(0, 10);
+			ssd1306tx_string("as: ");
 			ssd1306tx_float(avg_speed, 1);
 			ssd1306tx_string(" km/h");
 			break;
@@ -271,7 +272,7 @@ void display_data() {
 			ssd1306_setpos(0, 0);
 			ssd1306tx_string("pwr save:");
 
-			ssd1306_setpos(0, 16);
+			ssd1306_setpos(0, 10);
 			ssd1306tx_string(pwr_save_mode ? "on" : "off");
 			break;
 
@@ -279,7 +280,7 @@ void display_data() {
 			ssd1306_setpos(0, 0);
 			ssd1306tx_string("led:");
 
-			ssd1306_setpos(0, 16);
+			ssd1306_setpos(0, 10);
 			ssd1306tx_string(led_turned ? "on" : "off");
 			break;
 	}
