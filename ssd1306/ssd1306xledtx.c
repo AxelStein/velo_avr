@@ -22,22 +22,40 @@
 extern void ssd1306_start_data();	// Initiate transmission of data
 extern void ssd1306_data_byte(uint8_t);	// Transmission 1 byte of data
 extern void ssd1306_stop();			// Finish transmission
-char* ftoa(float f, int precision, char* a);
-char* itoa(int value, char* result, int base);
+void ftoa(float f, int precision, char *buf);
+void itoa(int n, char *buf);
+int abs_val(int v);
 
 const uint8_t *ssd1306tx_font_src;
-char str_buf[10];
 
 void ssd1306tx_init(const uint8_t *font) {
 	ssd1306tx_font_src = font;
 }
 
-void ssd1306tx_float(float n, int precision) {
-	ssd1306tx_string(ftoa(n, precision, str_buf));
+void ssd1306tx_float(float f, int precision) {
+	if (f < 0 || f >= 1000) {
+		return;
+	}
+	
+	char buf[10];
+	ftoa(f, precision, buf);
+	
+	for (uint8_t i = 0; buf[i] != '\0'; i++) {
+		ssd1306tx_char(buf[i]);
+	}
 }
 
 void ssd1306tx_int(int n) {
-	ssd1306tx_string(itoa(n, str_buf, 10));
+	if (n < 0 || n >= 1000) {
+		return;
+	}
+	
+	char buf[5];
+	itoa(n, buf);
+	
+	for (uint8_t i = 0; buf[i] != '\0'; i++) {
+		ssd1306tx_char(buf[i]);
+	}
 }
 
 void ssd1306tx_char(char ch) {
@@ -49,50 +67,42 @@ void ssd1306tx_char(char ch) {
 	ssd1306_stop();
 }
 
-void ssd1306tx_string(char* s) {
+void ssd1306tx_string(char *s) {
 	while (*s) {
 		ssd1306tx_char(*s++);
 	}
 }
 
-/**
-* C++ version 0.4 char* style "itoa":
-* Written by Lukas Chmela
-* Released under GPLv3.
-*/
-char* itoa(int value, char* result, int base) {
-	char* ptr = result, *ptr1 = result, tmp_char;
-	int tmp_value;
-
+void itoa(int n, char *buf) {
+	int i = 0, j = 0;
 	do {
-		tmp_value = value;
-		value /= base;
-		*ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz"[35 + (tmp_value - value * base)];
-	} while (value);
+		buf[i++] = n % 10 + '0';
+	} while ((n /= 10) > 0);
+	buf[i] = '\0';
 
-	// Apply negative sign
-	if (tmp_value < 0) *ptr++ = '-';
-	*ptr-- = '\0';
-	while (ptr1 < ptr) {
-		tmp_char = *ptr;
-		*ptr--= *ptr1;
-		*ptr1++ = tmp_char;
+	// reverse
+	char tmp;
+	for (j = i-1, i = 0; i < j; i++, j--) {
+		tmp = buf[i];
+		buf[i] = buf[j];
+		buf[j] = tmp;
 	}
-	return result;
 }
 
-long abs_val(long v) {
+int abs_val(int v) {
 	return v < 0 ? -v : v;
 }
 
-char* ftoa(float f, int precision, char* a) {
-	long p[] = {0, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000};
-	char* ret = a;
-	long number = (long) f;
-	itoa(number, a, 10);
-	while (*a != '\0') a++;
-	*a++ = '.';
-	long decimal = abs_val((long)((f - number) * p[precision]));
-	itoa(decimal, a, 10);
-	return ret;
+void ftoa(float f, int precision, char *buf) {
+	int number = (int) f;
+	itoa(number, buf);
+	while (*buf != '\0') buf++;
+	*buf++ = '.';
+	
+	if (precision > 4) {
+		precision = 4;
+	}
+	int p[] = {0, 10, 100, 1000, 10000};
+	int decimal = abs_val((int)((f - number) * p[precision]));
+	itoa(decimal, buf);
 }
