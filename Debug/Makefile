@@ -40,7 +40,6 @@ SUBDIRS :=  \
 C_SRCS +=  \
 ../main.c \
 ../ssd1306/ssd1306xled.c \
-../ssd1306/ssd1306xledfx.c \
 ../ssd1306/ssd1306xledtx.c
 
 
@@ -53,25 +52,21 @@ ASM_SRCS +=
 OBJS +=  \
 main.o \
 ssd1306/ssd1306xled.o \
-ssd1306/ssd1306xledfx.o \
 ssd1306/ssd1306xledtx.o
 
 OBJS_AS_ARGS +=  \
 main.o \
 ssd1306/ssd1306xled.o \
-ssd1306/ssd1306xledfx.o \
 ssd1306/ssd1306xledtx.o
 
 C_DEPS +=  \
 main.d \
 ssd1306/ssd1306xled.d \
-ssd1306/ssd1306xledfx.d \
 ssd1306/ssd1306xledtx.d
 
 C_DEPS_AS_ARGS +=  \
 main.d \
 ssd1306/ssd1306xled.d \
-ssd1306/ssd1306xledfx.d \
 ssd1306/ssd1306xledtx.d
 
 OUTPUT_FILE_PATH +=Velo.elf
@@ -96,13 +91,6 @@ LINKER_SCRIPT_DEP+=
 	
 
 ssd1306/ssd1306xled.o: ../ssd1306/ssd1306xled.c
-	@echo Building file: $<
-	@echo Invoking: AVR/GNU C Compiler : 5.4.0
-	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATtiny_DFP\1.3.229\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=attiny85 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATtiny_DFP\1.3.229\gcc\dev\attiny85" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
-	@echo Finished building: $<
-	
-
-ssd1306/ssd1306xledfx.o: ../ssd1306/ssd1306xledfx.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATtiny_DFP\1.3.229\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=attiny85 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATtiny_DFP\1.3.229\gcc\dev\attiny85" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

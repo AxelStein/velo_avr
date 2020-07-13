@@ -131,6 +131,9 @@ void ssd1306_stop() {
 
 // ============================================================================
 
+uint8_t pos_x = 0;
+uint8_t pos_y = 0;
+
 void ssd1306_init() {
 	ssd1306_start_command();	// Initiate transmission of command
 	for (uint8_t i = 0; i < sizeof (ssd1306_init_sequence); i++) {
@@ -139,7 +142,10 @@ void ssd1306_init() {
 	ssd1306_stop();	// Finish transmission
 }
 
-void ssd1306_setpos(uint8_t x, uint8_t y) {
+void ssd1306_set_pos(uint8_t x, uint8_t y) {
+	pos_x = x;
+	pos_y = y;
+	
 	ssd1306_start_command();
 	ssd1306_data_byte(0xb0 | (y & 0x07));	// Set page start address
 	ssd1306_data_byte(x & 0x0f);			// Set the lower nibble of the column start address
@@ -148,7 +154,7 @@ void ssd1306_setpos(uint8_t x, uint8_t y) {
 }
 
 void ssd1306_fill4(uint8_t p1, uint8_t p2, uint8_t p3, uint8_t p4) {
-	ssd1306_setpos(0, 0);
+	ssd1306_set_pos(0, 0);
 	ssd1306_start_data();	// Initiate transmission of data
 	for (uint16_t i = 0; i < 128 * 8 / 4; i++) {
 		ssd1306_data_byte(p1);
@@ -166,51 +172,3 @@ void ssd1306_turn_display(bool on) {
 }
 
 // ============================================================================
-
-/*
-	0xAE,			// Display OFF (sleep mode)
-	0x20, 0b10,		// Set Memory Addressing Mode
-	// 00=Horizontal Addressing Mode; 01=Vertical Addressing Mode;
-	// 10=Page Addressing Mode (RESET); 11=Invalid
-	0xB0,			// Set Page Start Address for Page Addressing Mode, 0-7
-	0xC0,			// Set COM Output Scan Direction
-	0x00,			// Set low nibble of column address
-	0x10,			// Set high nibble of column address
-	0x40,			// Set display start line address
-	0x81, 0x7F,		// Set contrast control register
-	0xA0,			// Set Segment Re-map. A0=column 0 mapped to SEG0; A1=column 127 mapped to SEG0.
-	0xA6,			// Set display mode. A6=Normal; A7=Inverse
-	0xA8, 0x3F,		// Set multiplex ratio(1 to 64)
-	0xA4,			// Output RAM to Display
-	// 0xA4=Output follows RAM content; 0xA5,Output ignores RAM content
-	0xD3, 0x00,		// Set display offset. 00 = no offset
-	0xD5, 0x80,		// --set display clock divide ratio/oscillator frequency
-	0xD9, 0x22,		// Set pre-charge period
-	0xDA, 0x12,		// Set com pins hardware configuration
-	0xDB, 0x20,		// --set vcomh 0x20 = 0.77xVcc
-	0xAD, 0x00,		// Select external IREF. 0x10 or 0x30 for Internal current reference at 19uA or 30uA
-	0x8D, 0x10		// Set DC-DC disabled
-	*/
-	//
-	// 0xD6, 0x01,		// Set Zoom In, 0=disabled, 1=enabled
-	/*
-	0xAE,			// Display OFF (sleep mode)
-	0x20, 0x00,		// Set Memory Addressing Mode - 00=Horizontal, 01=Vertical, , 10=Page, 11=Invalid
-	0xB0,			// Set Page Start Address for Page Addressing Mode, 0-7
-	0xC8,			// Set COM Output Scan Direction
-	0x00,			// ---set low column address
-	0x10,			// ---set high column address
-	0x40,			// --set start line address
-	0x81, 0x3F,		// Set contrast control register
-	0xA1,			// Set Segment Re-map. A0=address mapped; A1=address 127 mapped.
-	0xA6,			// Set display mode. A6=Normal; A7=Inverse
-	0xA8, 0x3F,		// Set multiplex ratio(1 to 64)
-	0xA4,			// Output RAM to Display - 0xA4=Output follows RAM content; 0xA5,Output ignores RAM content
-	0xD3, 0x00,		// Set display offset. 00 = no offset
-	0xD5, 0xF0,		// --set display clock divide ratio/oscillator frequency
-	0xD9, 0x22,		// Set pre-charge period
-	0xDA, 0x12,		// Set com pins hardware configuration
-	0xDB, 0x20,		// --set vcomh, 0x20,0.77xVcc
-	0x8D, 0x14,		// Charge Pump Setting, 14h = Enable Charge Pump
-	0xAF,			// Display ON in normal mode
-	*/

@@ -18,18 +18,73 @@
 
 #include "ssd1306xled.h"
 #include "ssd1306xledtx.h"
+#include "font6x8.h"
+#include "font8x16.h"
 
 extern void ssd1306_start_data();	// Initiate transmission of data
 extern void ssd1306_data_byte(uint8_t);	// Transmission 1 byte of data
 extern void ssd1306_stop();			// Finish transmission
+
+void ssd1306tx_char_6x8(char ch);
+void ssd1306tx_char_8x16(char ch, uint8_t x, uint8_t y);
 void ftoa(float f, int precision, char *buf);
 void itoa(int n, char *buf);
 int abs_val(int v);
 
-const uint8_t *ssd1306tx_font_src;
+uint8_t font_size = 1;
 
-void ssd1306tx_init(const uint8_t *font) {
-	ssd1306tx_font_src = font;
+void ssd1306tx_font_size(uint8_t size) {
+	font_size = size;
+}
+
+void ssd1306tx_string(char *s) {
+	switch (font_size) {
+		case 1:
+			while (*s) ssd1306tx_char_6x8(*s++);
+			break;
+		/*
+		case 2: {
+			uint8_t x = pos_x;
+			uint8_t y = pos_y;
+			
+			while (*s) {
+				ssd1306tx_char_8x16(*s++, x, y);
+				x += 8;
+			}
+			
+			ssd1306_set_pos(x, y);
+			break;
+		}
+		*/
+	}
+}
+
+void ssd1306tx_char_6x8(char ch) {
+	uint16_t row = (ch << 2) + (ch << 1) - 192;
+	
+	ssd1306_start_data();
+	for (uint8_t col = 0; col < 6; col++) {
+		ssd1306_data_byte(pgm_read_byte(&ssd1306xled_font6x8data[row + col]));
+	}
+	ssd1306_stop();
+}
+
+void ssd1306tx_char_8x16(char ch, uint8_t x, uint8_t y) {
+	uint16_t row = (ch - 32) * 16;
+	
+	ssd1306_set_pos(x, y);
+	ssd1306_start_data();
+	for (uint8_t col = 0; col < 8; col++) {
+		ssd1306_data_byte(pgm_read_byte(&ssd1306xled_font8x16data[row + col]));
+	}
+	ssd1306_stop();
+	
+	ssd1306_set_pos(x, y + 1);
+	ssd1306_start_data();
+	for (uint8_t col = 8; col < 16; col++) {
+		ssd1306_data_byte(pgm_read_byte(&ssd1306xled_font8x16data[row + col]));
+	}
+	ssd1306_stop();
 }
 
 void ssd1306tx_float(float f, int precision) {
@@ -39,10 +94,7 @@ void ssd1306tx_float(float f, int precision) {
 	
 	char buf[10];
 	ftoa(f, precision, buf);
-	
-	for (uint8_t i = 0; buf[i] != '\0'; i++) {
-		ssd1306tx_char(buf[i]);
-	}
+	ssd1306tx_string(buf);
 }
 
 void ssd1306tx_int(int n) {
@@ -52,25 +104,7 @@ void ssd1306tx_int(int n) {
 	
 	char buf[5];
 	itoa(n, buf);
-	
-	for (uint8_t i = 0; buf[i] != '\0'; i++) {
-		ssd1306tx_char(buf[i]);
-	}
-}
-
-void ssd1306tx_char(char ch) {
-	uint16_t j = (ch << 2) + (ch << 1) - 192; // Equiv.: j=(ch-32)*6 <== Convert ASCII code to font data index.
-	ssd1306_start_data();
-	for (uint8_t i = 0; i < 6; i++) {
-		ssd1306_data_byte(pgm_read_byte(&ssd1306tx_font_src[j + i]));
-	}
-	ssd1306_stop();
-}
-
-void ssd1306tx_string(char *s) {
-	while (*s) {
-		ssd1306tx_char(*s++);
-	}
+	ssd1306tx_string(buf);
 }
 
 void itoa(int n, char *buf) {
