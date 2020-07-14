@@ -27,22 +27,35 @@ extern void ssd1306_stop();			// Finish transmission
 
 void ssd1306tx_char_6x8(char ch);
 void ssd1306tx_char_8x16(char ch, uint8_t x, uint8_t y);
+void itoa(int n, int precision, char *buf);
 void ftoa(float f, int precision, char *buf);
-void itoa(int n, char *buf);
 int abs_val(int v);
 
+/*
 uint8_t font_size = 1;
 
 void ssd1306tx_font_size(uint8_t size) {
 	font_size = size;
 }
+*/
 
 void ssd1306tx_string(char *s) {
+	uint8_t x = pos_x;
+	uint8_t y = pos_y;
+	
+	while (*s) {
+		ssd1306tx_char_8x16(*s++, x, y);
+		x += 8;
+	}
+	
+	ssd1306_set_pos(x, y);
+	
+	/*
 	switch (font_size) {
 		case 1:
 			while (*s) ssd1306tx_char_6x8(*s++);
 			break;
-		/*
+		
 		case 2: {
 			uint8_t x = pos_x;
 			uint8_t y = pos_y;
@@ -55,8 +68,9 @@ void ssd1306tx_string(char *s) {
 			ssd1306_set_pos(x, y);
 			break;
 		}
-		*/
+		
 	}
+	*/
 }
 
 void ssd1306tx_char_6x8(char ch) {
@@ -98,20 +112,30 @@ void ssd1306tx_float(float f, int precision) {
 }
 
 void ssd1306tx_int(int n) {
+	ssd1306tx_int_p(n, 0);
+}
+
+void ssd1306tx_int_p(int n, int precision) {
 	if (n < 0 || n >= 1000) {
 		return;
 	}
 	
 	char buf[5];
-	itoa(n, buf);
+	itoa(n, precision, buf);
 	ssd1306tx_string(buf);
 }
 
-void itoa(int n, char *buf) {
+void itoa(int n, int precision, char *buf) {
+	if (n < 0) {
+		*buf++ = '-';
+		n = -n;
+	}
+
 	int i = 0, j = 0;
 	do {
 		buf[i++] = n % 10 + '0';
 	} while ((n /= 10) > 0);
+	while (i < precision) buf[i++] = '0';
 	buf[i] = '\0';
 
 	// reverse
@@ -123,20 +147,33 @@ void itoa(int n, char *buf) {
 	}
 }
 
-int abs_val(int v) {
-	return v < 0 ? -v : v;
+int power(int base, int exponent) {
+	int result = 1;
+	for (; exponent > 0; exponent--) {
+		result *= base;
+	}
+	return result;
 }
 
 void ftoa(float f, int precision, char *buf) {
-	int number = (int) f;
-	itoa(number, buf);
+	if (f < 0) {
+		*buf++ = '-';
+		f = -f;
+	}
+
+	// Extract integer part
+	int n = (int) f;
+	
+	// Extract floating part
+	float d = f - (float) n;
+	
+	// convert integer part to string
+	itoa(n, 0, buf);
+
 	while (*buf != '\0') buf++;
 	*buf++ = '.';
 	
-	if (precision > 4) {
-		precision = 4;
-	}
-	int p[] = {0, 10, 100, 1000, 10000};
-	int decimal = abs_val((int)((f - number) * p[precision]));
-	itoa(decimal, buf);
+	// convert floating part to string
+	d *= power(10, precision);
+	itoa((int) d, precision, buf);
 }

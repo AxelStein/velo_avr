@@ -58,12 +58,12 @@ uint8_t speed_arr_index;
 void start_millis_timer();
 uint32_t millis();
 void calc_wheel_length();
-void display_data();
+void display_update();
 void calc_wheel_length();
 void set_wheel_diameter(uint8_t diameter);
 void turn_display(bool on);
 void switch_display_menu();
-void display_data();
+void display_update();
 void calc_avg_speed(float speed);
 void turn_led(bool on);
 void handle_btn_click(uint8_t pin_state, uint32_t timer_now);
@@ -84,12 +84,12 @@ int main(void) {
 	start_millis_timer();
 	
 	calc_wheel_length();
-	display_data();
+	display_update();
 	
 	_delay_ms(100);
 	ssd1306_init();
 	ssd1306_clear();
-	display_data();
+	display_update();
 	
 	display_turned = true;
 	
@@ -133,13 +133,15 @@ int main(void) {
 			wheel_rpm = 0;
 			wheel_rotation_counter = 0;
 			wheel_rotation_start_time = 0;
-			display_data();
+			if (display_menu == MENU_MAIN) {
+				display_update();
+			}
 		}
 		
 		bool upd_time = display_menu == MENU_TIME && timer_now - display_timer >= 1000;
 		bool upd_display = display_menu == MENU_MAIN && speed > 0 && timer_now - display_timer >= 4000;
 		if (upd_time || upd_display) {
-			display_data();
+			display_update();
 			display_timer = timer_now;
 		}
     }
@@ -152,7 +154,7 @@ void start_millis_timer() {
 	TCCR0A |= _BV(WGM01);
 	
 	// set timer0 compare value
-	OCR0A = 135; // 125
+	OCR0A = 130; // 125
 	
 	// set timer0 prescaler 64
 	TCCR0B |= _BV(CS00) | _BV(CS01);
@@ -205,30 +207,35 @@ void switch_display_menu() {
 	}
 }
 
-void display_data() {
+void display_update() {
 	switch(display_menu) {
 		case MENU_MAIN:
 			ssd1306_set_pos(0, 0);
 			ssd1306tx_string("s: ");
 			ssd1306tx_float(speed, 1);
-			ssd1306tx_string(" km/h    ");
+			ssd1306tx_string(" km/h   ");
 
 			ssd1306_set_pos(0, 2);
 			ssd1306tx_string("d: ");
 			ssd1306tx_float(distance, 2);
-			ssd1306tx_string(" km    ");
+			ssd1306tx_string(" km   ");
+			
+			ssd1306_set_pos(0, 4);
+			ssd1306tx_string("rpm: ");
+			ssd1306tx_int(wheel_rpm);
+			ssd1306tx_string("   ");
 			break;
 		
 		case MENU_SPEED:
 			ssd1306_set_pos(0, 0);
 			ssd1306tx_string("ms: ");
 			ssd1306tx_float(max_speed, 1);
-			ssd1306tx_string(" km/h    ");
+			ssd1306tx_string(" km/h ");
 
 			ssd1306_set_pos(0, 2);
 			ssd1306tx_string("as: ");
 			ssd1306tx_float(avg_speed, 1);
-			ssd1306tx_string(" km/h    ");
+			ssd1306tx_string(" km/h ");
 			break;
 
 		case MENU_TIME: {
@@ -242,22 +249,13 @@ void display_data() {
 			ssd1306tx_string("time:");
 			
 			ssd1306_set_pos(0, 2);
-			if (hours < 10) {
-				ssd1306tx_string("0");
-			}
-			ssd1306tx_int(hours);
+			ssd1306tx_int_p(hours, 2);
 			ssd1306tx_string(":");
 			
-			if (minutes < 10) {
-				ssd1306tx_string("0");
-			}
-			ssd1306tx_int(minutes);
+			ssd1306tx_int_p(minutes, 2);
 			ssd1306tx_string(":");
 			
-			if (seconds < 10) {
-				ssd1306tx_string("0");
-			}
-			ssd1306tx_int(seconds);
+			ssd1306tx_int_p(seconds, 2);
 			break;
 		}
 		
@@ -289,7 +287,7 @@ void handle_btn_click(uint8_t pin_state, uint32_t timer_now) {
 		btn_pressed = false;
 		if (!btn_long_pressed && display_turned && timer_now - btn_timer >= 50) { // single press
 			switch_display_menu();
-			display_data();
+			display_update();
 		}
 		btn_long_pressed = false;
 	}
@@ -300,7 +298,7 @@ void handle_btn_click(uint8_t pin_state, uint32_t timer_now) {
 		switch (display_menu) {
 			case MENU_LED:
 				turn_led(!led_turned);
-				display_data();
+				display_update();
 				break;
 			default:
 				turn_display(!display_turned);
@@ -322,7 +320,6 @@ void calc_speed(uint32_t timer_now) {
 				max_speed = speed;
 			}
 			calc_avg_speed(speed);
-			// display_data();
 		}
 
 		wheel_rotation_counter = 0;

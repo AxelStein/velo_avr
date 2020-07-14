@@ -18,9 +18,10 @@
 
 // ----------------------------------------------------------------------------
 
-void ssd1306tx_font_size(uint8_t size);
+// void ssd1306tx_font_size(uint8_t size);
 void ssd1306tx_float(float n, int precision);
 void ssd1306tx_int(int n);
+void ssd1306tx_int_p(int n, int precision);
 void ssd1306tx_string(char *s);
 
 // ============================================================================
