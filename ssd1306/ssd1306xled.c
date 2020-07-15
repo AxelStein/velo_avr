@@ -111,14 +111,14 @@ void i2csw_byte(uint8_t byte) {
 
 void ssd1306_start_command() {
 	i2csw_start();
-	i2csw_byte(SSD1306_SADDR);	// Slave address: R/W(SA0)=0 - write
-	i2csw_byte(0x00);			// Control byte: D/C=0 - write command
+	i2csw_byte(SSD1306_SADDR); // Slave address: R/W(SA0)=0 - write
+	i2csw_byte(0x00);          // Control byte: D/C=0 - write command
 }
 
 void ssd1306_start_data() {
 	i2csw_start();
-	i2csw_byte(SSD1306_SADDR);	// Slave address, R/W(SA0)=0 - write
-	i2csw_byte(0x40);			// Control byte: D/C=1 - write data
+	i2csw_byte(SSD1306_SADDR); // Slave address, R/W(SA0)=0 - write
+	i2csw_byte(0x40);          // Control byte: D/C=1 - write data
 }
 
 void ssd1306_data_byte(uint8_t b) {
@@ -135,11 +135,11 @@ uint8_t pos_x = 0;
 uint8_t pos_y = 0;
 
 void ssd1306_init() {
-	ssd1306_start_command();	// Initiate transmission of command
+	ssd1306_start_command(); // Initiate transmission of command
 	for (uint8_t i = 0; i < sizeof (ssd1306_init_sequence); i++) {
-		ssd1306_data_byte(pgm_read_byte(&ssd1306_init_sequence[i]));	// Send the command out
+		ssd1306_data_byte(pgm_read_byte(&ssd1306_init_sequence[i])); // Send the command out
 	}
-	ssd1306_stop();	// Finish transmission
+	ssd1306_stop(); // Finish transmission
 }
 
 void ssd1306_set_pos(uint8_t x, uint8_t y) {
@@ -150,12 +150,12 @@ void ssd1306_set_pos(uint8_t x, uint8_t y) {
 	ssd1306_data_byte(0xb0 | (y & 0x07));	// Set page start address
 	ssd1306_data_byte(x & 0x0f);			// Set the lower nibble of the column start address
 	ssd1306_data_byte(0x10 | (x >> 4));		// Set the higher nibble of the column start address
-	ssd1306_stop();	// Finish transmission
+	ssd1306_stop();	                        // Finish transmission
 }
 
 void ssd1306_fill4(uint8_t p1, uint8_t p2, uint8_t p3, uint8_t p4) {
 	ssd1306_set_pos(0, 0);
-	ssd1306_start_data();	// Initiate transmission of data
+	ssd1306_start_data(); // Initiate transmission of data
 	for (uint16_t i = 0; i < 128 * 8 / 4; i++) {
 		ssd1306_data_byte(p1);
 		ssd1306_data_byte(p2);

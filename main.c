@@ -30,9 +30,11 @@
 uint8_t EEMEM EEPROM_WHEEL_DIAMETER;
 
 volatile uint32_t ms;
+
 bool display_turned;
 uint8_t display_menu;
 uint32_t display_timer;
+
 bool led_turned;
 uint32_t led_timer;
 
@@ -42,18 +44,17 @@ uint32_t btn_timer; // ms
 
 float wheel_length; // km
 float distance; // km
-
-volatile bool wheel_rotation_started;
-bool wheel_pin_state;
-uint8_t wheel_rotation_counter;
-uint32_t wheel_rotation_last_time; // ms
-uint32_t wheel_rotation_start_time; // ms
-uint16_t wheel_rpm;
 float speed; // km/h
 float max_speed; // km/h
 float avg_speed; // km/h
 float speed_arr[8];
 uint8_t speed_arr_index;
+
+volatile bool wheel_rotation_started;
+uint8_t wheel_rotation_counter;
+uint32_t wheel_rotation_last_time; // ms
+uint32_t wheel_rotation_start_time; // ms
+uint16_t wheel_rpm;
 
 void start_millis_timer();
 uint32_t millis();
@@ -75,11 +76,9 @@ int main(void) {
 	CLKPR = 0;
 	
 	DDRB = 0;
-	// led pin as output
-	DDRB |= _BV(LED_PIN);
+	DDRB |= _BV(LED_PIN); // led pin as output
 	
-	// turn on btn pin input pullup
-	PORTB |= _BV(BTN_PIN);
+	PORTB |= _BV(BTN_PIN); // turn on btn pin input pullup
 	
 	start_millis_timer();
 	
@@ -139,8 +138,8 @@ int main(void) {
 		}
 		
 		bool upd_time = display_menu == MENU_TIME && timer_now - display_timer >= 1000;
-		bool upd_display = display_menu == MENU_MAIN && speed > 0 && timer_now - display_timer >= 4000;
-		if (upd_time || upd_display) {
+		bool upd_speed = display_menu == MENU_MAIN && speed > 0 && timer_now - display_timer >= 4000;
+		if (upd_time || upd_speed) {
 			display_update();
 			display_timer = timer_now;
 		}
@@ -150,17 +149,10 @@ int main(void) {
 void start_millis_timer() {
 	cli();
 	
-	// set timer0 CTC mode
-	TCCR0A |= _BV(WGM01);
-	
-	// set timer0 compare value
-	OCR0A = 130; // 125
-	
-	// set timer0 prescaler 64
-	TCCR0B |= _BV(CS00) | _BV(CS01);
-	
-	// enable interrupt
-	TIMSK |= _BV(OCIE0A);
+	TCCR0A |= _BV(WGM01);            // set timer0 CTC mode
+	OCR0A = 130;                     // set timer0 compare value
+	TCCR0B |= _BV(CS00) | _BV(CS01); // set timer0 prescaler 64
+	TIMSK |= _BV(OCIE0A);            // enable interrupt
 	
 	sei();
 }
@@ -271,8 +263,7 @@ void display_update() {
 
 void turn_led(bool on) {
 	led_turned = on;
-	// turn off led
-	PORTB &= ~_BV(LED_PIN);
+	PORTB &= ~_BV(LED_PIN); // turn off led
 }
 
 void handle_btn_click(uint8_t pin_state, uint32_t timer_now) {
@@ -336,6 +327,7 @@ void calc_avg_speed(float speed) {
 	
 	if (speed_arr_index == 8) {
 		speed_arr_index = 0;
+		
 		float sum = 0;
 		for (uint8_t i = 0; i < 8; i++) {
 			sum += speed_arr[i];

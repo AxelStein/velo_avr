@@ -21,9 +21,9 @@
 #include "font6x8.h"
 #include "font8x16.h"
 
-extern void ssd1306_start_data();	// Initiate transmission of data
-extern void ssd1306_data_byte(uint8_t);	// Transmission 1 byte of data
-extern void ssd1306_stop();			// Finish transmission
+extern void ssd1306_start_data();	     // initiate transmission of data
+extern void ssd1306_data_byte(uint8_t);	 // transmission 1 byte of data
+extern void ssd1306_stop();			     // finish transmission
 
 void ssd1306tx_char_6x8(char ch);
 void ssd1306tx_char_8x16(char ch, uint8_t x, uint8_t y);
@@ -161,19 +161,13 @@ void ftoa(float f, int precision, char *buf) {
 		f = -f;
 	}
 
-	// Extract integer part
-	int n = (int) f;
-	
-	// Extract floating part
-	float d = f - (float) n;
-	
-	// convert integer part to string
-	itoa(n, 0, buf);
+	int n = (int) f;                // extract integer part
+	float d = f - (float) n;        // extract floating part	
+	itoa(n, 0, buf);                // convert integer part to string
 
 	while (*buf != '\0') buf++;
 	*buf++ = '.';
 	
-	// convert floating part to string
-	d *= power(10, precision);
+	d *= power(10, precision);      // convert floating part to string
 	itoa((int) d, precision, buf);
 }
