@@ -20,14 +20,17 @@
 #define WHEEL_PIN PB2
 #define BTN_PIN PB3
 #define LED_PIN PB4
+#define SINGLE_PRESS_TIME 50
 #define LONG_PRESS_TIME 500
 #define WHEEL_RPM_MAX 600
 #define MENU_MAIN 0
 #define MENU_SPEED 1
-#define MENU_TIME 2
-#define MENU_LED 3
+#define MENU_DISTANCE 2
+#define MENU_TIME 3
+#define MENU_LED 4
 
-uint8_t EEMEM EEPROM_WHEEL_DIAMETER;
+uint8_t EEMEM EEPROM_WHEEL_DIAMETER = 64;
+float EEMEM EEPROM_TOTAL_DISTANCE = 0;
 
 volatile uint32_t ms;
 
@@ -40,20 +43,24 @@ uint32_t led_timer;
 
 bool btn_pressed;
 bool btn_long_pressed;
-uint32_t btn_timer; // ms
+uint32_t btn_timer;                    // ms
 
-float wheel_length; // km
-float distance; // km
-float speed; // km/h
-float max_speed; // km/h
-float avg_speed; // km/h
+float wheel_length;                    // km
+float distance;                        // km
+float total_distance;                  // km
+float period_distance;                 // 1 km
+bool distance_saved;
+
+float speed;                           // km/h
+float max_speed;                       // km/h
+float avg_speed;                       // km/h
 float speed_arr[8];
 uint8_t speed_arr_index;
 
 volatile bool wheel_rotation_started;
 uint8_t wheel_rotation_counter;
-uint32_t wheel_rotation_last_time; // ms
-uint32_t wheel_rotation_start_time; // ms
+uint32_t wheel_rotation_last_time;     // ms
+uint32_t wheel_rotation_start_time;    // ms
 uint16_t wheel_rpm;
 
 void start_millis_timer();
@@ -62,6 +69,7 @@ void calc_wheel_length();
 void display_update();
 void calc_wheel_length();
 void set_wheel_diameter(uint8_t diameter);
+void save_distance();
 void turn_display(bool on);
 void switch_display_menu();
 void display_update();
@@ -76,14 +84,13 @@ int main(void) {
 	CLKPR = 0;
 	
 	DDRB = 0;
-	DDRB |= _BV(LED_PIN); // led pin as output
+	DDRB |= _BV(LED_PIN);   // led pin as output
 	
-	PORTB |= _BV(BTN_PIN); // turn on btn pin input pullup
+	PORTB |= _BV(BTN_PIN);  // turn on btn pin input pullup
 	
 	start_millis_timer();
-	
 	calc_wheel_length();
-	display_update();
+	total_distance = eeprom_read_float(&EEPROM_TOTAL_DISTANCE);
 	
 	_delay_ms(100);
 	ssd1306_init();
@@ -114,6 +121,12 @@ int main(void) {
 
 			wheel_rotation_counter++;
 			distance += wheel_length;
+			period_distance += wheel_length;
+			
+			// save total distance every km
+			if (period_distance >= 1.0) {
+				save_distance();
+			}
 		}
 		
 		calc_speed(timer_now);
@@ -149,10 +162,10 @@ int main(void) {
 void start_millis_timer() {
 	cli();
 	
-	TCCR0A |= _BV(WGM01);            // set timer0 CTC mode
-	OCR0A = 130;                     // set timer0 compare value
-	TCCR0B |= _BV(CS00) | _BV(CS01); // set timer0 prescaler 64
-	TIMSK |= _BV(OCIE0A);            // enable interrupt
+	TCCR0A |= _BV(WGM01);             // set timer0 CTC mode
+	OCR0A = 130;                      // set timer0 compare value
+	TCCR0B |= _BV(CS00) | _BV(CS01);  // set timer0 prescaler 64
+	TIMSK |= _BV(OCIE0A);             // enable interrupt
 	
 	sei();
 }
@@ -184,6 +197,12 @@ void set_wheel_diameter(uint8_t diameter) {
 	if (diameter > 0 && diameter < 0xFF) {
 		eeprom_write_byte(&EEPROM_WHEEL_DIAMETER, diameter);
 	}
+}
+
+void save_distance() {
+	total_distance += period_distance;
+	period_distance = 0;
+	eeprom_update_float(&EEPROM_TOTAL_DISTANCE, total_distance);
 }
 
 void turn_display(bool on) {
@@ -228,6 +247,22 @@ void display_update() {
 			ssd1306tx_string("as: ");
 			ssd1306tx_float(avg_speed, 1);
 			ssd1306tx_string(" km/h ");
+			break;
+		
+		case MENU_DISTANCE:
+			ssd1306_set_pos(0, 0);
+			ssd1306tx_string("total d:");
+			
+			ssd1306_set_pos(0, 2);
+			ssd1306tx_float(total_distance, 2);
+			ssd1306tx_string(" km");
+			
+			if (distance_saved) {
+				distance_saved = false;
+				
+				ssd1306_set_pos(0, 4);
+				ssd1306tx_string("saved");
+			}
 			break;
 
 		case MENU_TIME: {
@@ -276,7 +311,8 @@ void handle_btn_click(uint8_t pin_state, uint32_t timer_now) {
 	// handle single button click
 	if (btn_pressed && pin_state) {
 		btn_pressed = false;
-		if (!btn_long_pressed && display_turned && timer_now - btn_timer >= 50) { // single press
+
+		if (!btn_long_pressed && display_turned && ((timer_now - btn_timer) >= SINGLE_PRESS_TIME)) {
 			switch_display_menu();
 			display_update();
 		}
@@ -289,6 +325,12 @@ void handle_btn_click(uint8_t pin_state, uint32_t timer_now) {
 		switch (display_menu) {
 			case MENU_LED:
 				turn_led(!led_turned);
+				display_update();
+				break;
+			case MENU_DISTANCE:
+				save_distance();
+				
+				distance_saved = true;
 				display_update();
 				break;
 			default:

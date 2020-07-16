@@ -168,6 +168,6 @@ void ftoa(float f, int precision, char *buf) {
 	while (*buf != '\0') buf++;
 	*buf++ = '.';
 	
-	d *= power(10, precision);      // convert floating part to string
-	itoa((int) d, precision, buf);
+	d *= power(10, precision);
+	itoa((int) d, precision, buf);  // convert floating part to string
 }

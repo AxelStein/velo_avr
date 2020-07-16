@@ -58,19 +58,28 @@ c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/..
                               c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr25\libgcc.a(_divmodhi4.o) (__udivmodhi4)
 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_byte.o)
                               main.o (eeprom_read_byte)
+C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_dword.o)
+                              main.o (eeprom_read_float)
+C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_dword.o)
+                              main.o (eeprom_update_float)
 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eewr_byte.o)
                               main.o (eeprom_write_byte)
+C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_block.o)
+                              C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_dword.o) (eeprom_read_blraw)
+C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_byte.o)
+                              C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_dword.o) (eeprom_update_byte)
 
 Allocating common symbols
 Common symbol       size              file
 
 btn_long_pressed    0x1               main.o
+distance_saved      0x1               main.o
+period_distance     0x4               main.o
 avg_speed           0x4               main.o
 btn_pressed         0x1               main.o
 wheel_rotation_start_time
                     0x4               main.o
 ms                  0x4               main.o
-wheel_pin_state     0x1               main.o
 max_speed           0x4               main.o
 wheel_rpm           0x2               main.o
 wheel_length        0x4               main.o
@@ -83,6 +92,7 @@ speed_arr           0x20              main.o
 display_turned      0x1               main.o
 btn_timer           0x4               main.o
 display_timer       0x4               main.o
+total_distance      0x4               main.o
 wheel_rotation_started
                     0x1               main.o
 speed               0x4               main.o
@@ -303,9 +313,21 @@ Discarded input sections
  .text          0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_byte.o)
  .data          0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_byte.o)
  .bss           0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_byte.o)
+ .text          0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_dword.o)
+ .data          0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_dword.o)
+ .bss           0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_dword.o)
+ .text          0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_dword.o)
+ .data          0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_dword.o)
+ .bss           0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_dword.o)
  .text          0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eewr_byte.o)
  .data          0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eewr_byte.o)
  .bss           0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eewr_byte.o)
+ .text          0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_block.o)
+ .data          0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_block.o)
+ .bss           0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_block.o)
+ .text          0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_byte.o)
+ .data          0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_byte.o)
+ .bss           0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_byte.o)
 
 Memory Configuration
 
@@ -434,7 +456,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x1780
+.text           0x00000000     0x18e0
  *(.vectors)
  .vectors       0x00000000       0x1e C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25/crtattiny85.o
                 0x00000000                __vector_default
@@ -529,177 +551,196 @@ END GROUP
  .text.calc_wheel_length
                 0x000006f6       0x40 main.o
                 0x000006f6                calc_wheel_length
+ .text.save_distance
+                0x00000736       0x4e main.o
+                0x00000736                save_distance
  .text.turn_display
-                0x00000736        0x8 main.o
-                0x00000736                turn_display
+                0x00000784        0x8 main.o
+                0x00000784                turn_display
  .text.switch_display_menu
-                0x0000073e       0x20 main.o
-                0x0000073e                switch_display_menu
+                0x0000078c       0x20 main.o
+                0x0000078c                switch_display_menu
  .text.display_update
-                0x0000075e      0x19c main.o
-                0x0000075e                display_update
+                0x000007ac      0x1f2 main.o
+                0x000007ac                display_update
  .text.turn_led
-                0x000008fa        0x8 main.o
-                0x000008fa                turn_led
+                0x0000099e        0x8 main.o
+                0x0000099e                turn_led
  .text.handle_btn_click
-                0x00000902       0xe2 main.o
-                0x00000902                handle_btn_click
+                0x000009a6       0xf2 main.o
+                0x000009a6                handle_btn_click
  .text.calc_avg_speed
-                0x000009e4       0xf2 main.o
-                0x000009e4                calc_avg_speed
+                0x00000a98       0xf2 main.o
+                0x00000a98                calc_avg_speed
  .text.calc_speed
-                0x00000ad6       0xf0 main.o
-                0x00000ad6                calc_speed
- .text.main     0x00000bc6      0x248 main.o
-                0x00000bc6                main
+                0x00000b8a       0xf0 main.o
+                0x00000b8a                calc_speed
+ .text.main     0x00000c7a      0x296 main.o
+                0x00000c7a                main
  .text.i2csw_start
-                0x00000e0e        0xe ssd1306/ssd1306xled.o
-                0x00000e0e                i2csw_start
+                0x00000f10        0xe ssd1306/ssd1306xled.o
+                0x00000f10                i2csw_start
  .text.i2csw_stop
-                0x00000e1c        0xc ssd1306/ssd1306xled.o
-                0x00000e1c                i2csw_stop
+                0x00000f1e        0xc ssd1306/ssd1306xled.o
+                0x00000f1e                i2csw_stop
  .text.i2csw_byte
-                0x00000e28       0x34 ssd1306/ssd1306xled.o
-                0x00000e28                i2csw_byte
+                0x00000f2a       0x34 ssd1306/ssd1306xled.o
+                0x00000f2a                i2csw_byte
  .text.ssd1306_start_command
-                0x00000e5c        0xc ssd1306/ssd1306xled.o
-                0x00000e5c                ssd1306_start_command
+                0x00000f5e        0xc ssd1306/ssd1306xled.o
+                0x00000f5e                ssd1306_start_command
  .text.ssd1306_start_data
-                0x00000e68        0xc ssd1306/ssd1306xled.o
-                0x00000e68                ssd1306_start_data
+                0x00000f6a        0xc ssd1306/ssd1306xled.o
+                0x00000f6a                ssd1306_start_data
  .text.ssd1306_data_byte
-                0x00000e74        0x4 ssd1306/ssd1306xled.o
-                0x00000e74                ssd1306_data_byte
+                0x00000f76        0x4 ssd1306/ssd1306xled.o
+                0x00000f76                ssd1306_data_byte
  .text.ssd1306_stop
-                0x00000e78        0x4 ssd1306/ssd1306xled.o
-                0x00000e78                ssd1306_stop
+                0x00000f7a        0x4 ssd1306/ssd1306xled.o
+                0x00000f7a                ssd1306_stop
  .text.ssd1306_init
-                0x00000e7c       0x2c ssd1306/ssd1306xled.o
-                0x00000e7c                ssd1306_init
+                0x00000f7e       0x2c ssd1306/ssd1306xled.o
+                0x00000f7e                ssd1306_init
  .text.ssd1306_set_pos
-                0x00000ea8       0x32 ssd1306/ssd1306xled.o
-                0x00000ea8                ssd1306_set_pos
+                0x00000faa       0x32 ssd1306/ssd1306xled.o
+                0x00000faa                ssd1306_set_pos
  .text.ssd1306_fill4
-                0x00000eda       0x44 ssd1306/ssd1306xled.o
-                0x00000eda                ssd1306_fill4
+                0x00000fdc       0x44 ssd1306/ssd1306xled.o
+                0x00000fdc                ssd1306_fill4
  .text.ssd1306_turn_display
-                0x00000f1e       0x18 ssd1306/ssd1306xled.o
-                0x00000f1e                ssd1306_turn_display
+                0x00001020       0x18 ssd1306/ssd1306xled.o
+                0x00001020                ssd1306_turn_display
  .text.ssd1306tx_char_8x16
-                0x00000f36       0x86 ssd1306/ssd1306xledtx.o
-                0x00000f36                ssd1306tx_char_8x16
+                0x00001038       0x86 ssd1306/ssd1306xledtx.o
+                0x00001038                ssd1306tx_char_8x16
  .text.ssd1306tx_string
-                0x00000fbc       0x40 ssd1306/ssd1306xledtx.o
-                0x00000fbc                ssd1306tx_string
- .text.itoa     0x00000ffc       0xa8 ssd1306/ssd1306xledtx.o
-                0x00000ffc                itoa
+                0x000010be       0x40 ssd1306/ssd1306xledtx.o
+                0x000010be                ssd1306tx_string
+ .text.itoa     0x000010fe       0xa8 ssd1306/ssd1306xledtx.o
+                0x000010fe                itoa
  .text.ssd1306tx_int_p
-                0x000010a4       0x34 ssd1306/ssd1306xledtx.o
-                0x000010a4                ssd1306tx_int_p
+                0x000011a6       0x34 ssd1306/ssd1306xledtx.o
+                0x000011a6                ssd1306tx_int_p
  .text.ssd1306tx_int
-                0x000010d8        0x8 ssd1306/ssd1306xledtx.o
-                0x000010d8                ssd1306tx_int
- .text.ftoa     0x000010e0       0xea ssd1306/ssd1306xledtx.o
-                0x000010e0                ftoa
+                0x000011da        0x8 ssd1306/ssd1306xledtx.o
+                0x000011da                ssd1306tx_int
+ .text.ftoa     0x000011e2       0xea ssd1306/ssd1306xledtx.o
+                0x000011e2                ftoa
  .text.ssd1306tx_float
-                0x000011ca       0x76 ssd1306/ssd1306xledtx.o
-                0x000011ca                ssd1306tx_float
+                0x000012cc       0x76 ssd1306/ssd1306xledtx.o
+                0x000012cc                ssd1306tx_float
  .text.avr-libc.fplib
-                0x00001240        0xa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(addsf3.o)
-                0x00001240                __subsf3
-                0x00001242                __addsf3
+                0x00001342        0xa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(addsf3.o)
+                0x00001342                __subsf3
+                0x00001344                __addsf3
  .text.avr-libc.fplib
-                0x0000124a       0xc0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(addsf3x.o)
-                0x00001264                __addsf3x
+                0x0000134c       0xc0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(addsf3x.o)
+                0x00001366                __addsf3x
  .text.avr-libc.fplib
-                0x0000130a        0x8 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(cmpsf2.o)
-                0x0000130a                __nesf2
-                0x0000130a                __eqsf2
-                0x0000130a                __cmpsf2
-                0x0000130a                __ltsf2
-                0x0000130a                __lesf2
+                0x0000140c        0x8 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(cmpsf2.o)
+                0x0000140c                __nesf2
+                0x0000140c                __eqsf2
+                0x0000140c                __cmpsf2
+                0x0000140c                __ltsf2
+                0x0000140c                __lesf2
  .text.avr-libc.fplib
-                0x00001312        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(divsf3.o)
-                0x00001312                __divsf3
+                0x00001414        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(divsf3.o)
+                0x00001414                __divsf3
  .text.avr-libc.fplib
-                0x00001316       0xcc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(divsf3x.o)
-                0x0000132c                __divsf3x
-                0x00001330                __divsf3_pse
+                0x00001418       0xcc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(divsf3x.o)
+                0x0000142e                __divsf3x
+                0x00001432                __divsf3_pse
  .text.avr-libc.fplib
-                0x000013e2        0xa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fixsfsi.o)
-                0x000013e2                __fixsfsi
+                0x000014e4        0xa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fixsfsi.o)
+                0x000014e4                __fixsfsi
  .text.avr-libc.fplib
-                0x000013ec       0x58 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fixunssfsi.o)
-                0x000013ec                __fixunssfsi
+                0x000014ee       0x58 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fixunssfsi.o)
+                0x000014ee                __fixunssfsi
  .text.avr-libc.fplib
-                0x00001444       0x7a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(floatsisf.o)
-                0x00001444                __floatunsisf
-                0x00001448                __floatsisf
+                0x00001546       0x7a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(floatsisf.o)
+                0x00001546                __floatunsisf
+                0x0000154a                __floatsisf
  .text.avr-libc.fplib
-                0x000014be       0x48 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fp_cmp.o)
-                0x000014be                __fp_cmp
+                0x000015c0       0x48 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fp_cmp.o)
+                0x000015c0                __fp_cmp
  .text.avr-libc.fplib
-                0x00001506        0xc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fp_inf.o)
-                0x00001506                __fp_inf
+                0x00001608        0xc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fp_inf.o)
+                0x00001608                __fp_inf
  .text.avr-libc.fplib
-                0x00001512        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fp_nan.o)
-                0x00001512                __fp_nan
+                0x00001614        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fp_nan.o)
+                0x00001614                __fp_nan
  .text.avr-libc.fplib
-                0x00001518        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fp_pscA.o)
-                0x00001518                __fp_pscA
+                0x0000161a        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fp_pscA.o)
+                0x0000161a                __fp_pscA
  .text.avr-libc.fplib
-                0x00001526        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fp_pscB.o)
-                0x00001526                __fp_pscB
+                0x00001628        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fp_pscB.o)
+                0x00001628                __fp_pscB
  .text.avr-libc.fplib
-                0x00001534       0x22 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fp_round.o)
-                0x00001534                __fp_round
+                0x00001636       0x22 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fp_round.o)
+                0x00001636                __fp_round
  .text.avr-libc.fplib
-                0x00001556       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fp_split3.o)
-                0x00001556                __fp_split3
-                0x00001566                __fp_splitA
+                0x00001658       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fp_split3.o)
+                0x00001658                __fp_split3
+                0x00001668                __fp_splitA
  .text.avr-libc.fplib
-                0x0000159a        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fp_zero.o)
-                0x0000159a                __fp_zero
-                0x0000159c                __fp_szero
+                0x0000169c        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(fp_zero.o)
+                0x0000169c                __fp_zero
+                0x0000169e                __fp_szero
  .text.avr-libc.fplib
-                0x000015a8        0x8 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(gesf2.o)
-                0x000015a8                __gesf2
-                0x000015a8                __gtsf2
+                0x000016aa        0x8 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(gesf2.o)
+                0x000016aa                __gesf2
+                0x000016aa                __gtsf2
  .text.avr-libc.fplib
-                0x000015b0        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(mulsf3.o)
-                0x000015b0                __mulsf3
+                0x000016b2        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(mulsf3.o)
+                0x000016b2                __mulsf3
  .text.avr-libc.fplib
-                0x000015b4       0xd2 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(mulsf3x.o)
-                0x000015c6                __mulsf3x
-                0x000015ca                __mulsf3_pse
+                0x000016b6       0xd2 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr25\libm.a(mulsf3x.o)
+                0x000016c8                __mulsf3x
+                0x000016cc                __mulsf3_pse
  .text.libgcc.div
-                0x00001686       0x26 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr25\libgcc.a(_divmodhi4.o)
-                0x00001686                _div
-                0x00001686                __divmodhi4
+                0x00001788       0x26 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr25\libgcc.a(_divmodhi4.o)
+                0x00001788                _div
+                0x00001788                __divmodhi4
  .text.libgcc.div
-                0x000016ac       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr25\libgcc.a(_udivmodsi4.o)
-                0x000016ac                __udivmodsi4
+                0x000017ae       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr25\libgcc.a(_udivmodsi4.o)
+                0x000017ae                __udivmodsi4
  .text.libgcc.div
-                0x000016f0       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr25\libgcc.a(_divmodsi4.o)
-                0x000016f0                __divmodsi4
+                0x000017f2       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr25\libgcc.a(_divmodsi4.o)
+                0x000017f2                __divmodsi4
  .text.libgcc.div
-                0x00001718       0x10 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr25\libgcc.a(_negsi2.o)
-                0x00001718                __negsi2
+                0x0000181a       0x10 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr25\libgcc.a(_negsi2.o)
+                0x0000181a                __negsi2
  .text.libgcc.div
-                0x00001728       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr25\libgcc.a(_udivmodhi4.o)
-                0x00001728                __udivmodhi4
+                0x0000182a       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr25\libgcc.a(_udivmodhi4.o)
+                0x0000182a                __udivmodhi4
  .text.avr-libc
-                0x00001750       0x10 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_byte.o)
-                0x00001750                eeprom_read_byte
+                0x00001852       0x10 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_byte.o)
+                0x00001852                eeprom_read_byte
  .text.avr-libc
-                0x00001760       0x1c C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eewr_byte.o)
-                0x00001760                eeprom_write_byte
-                0x00001762                eeprom_write_r18
-                0x0000177c                . = ALIGN (0x2)
+                0x00001862        0xa C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_dword.o)
+                0x00001862                eeprom_read_float
+                0x00001862                eeprom_read_dword
+ .text.avr-libc
+                0x0000186c       0x10 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_dword.o)
+                0x0000186c                eeprom_update_float
+                0x0000186c                eeprom_update_dword
+ .text.avr-libc
+                0x0000187c       0x1c C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eewr_byte.o)
+                0x0000187c                eeprom_write_byte
+                0x0000187e                eeprom_write_r18
+ .text.avr-libc
+                0x00001898       0x20 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_block.o)
+                0x00001898                eeprom_read_block
+                0x0000189c                eeprom_read_blraw
+ .text.avr-libc
+                0x000018b8       0x24 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_byte.o)
+                0x000018b8                eeprom_update_byte
+                0x000018ba                eeprom_update_r18
+                0x000018dc                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000177c        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr25\libgcc.a(_exit.o)
-                0x0000177c                _exit
-                0x0000177c                exit
+ .fini9         0x000018dc        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr25\libgcc.a(_exit.o)
+                0x000018dc                _exit
+                0x000018dc                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -718,11 +759,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x0000177c        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr25\libgcc.a(_exit.o)
+ .fini0         0x000018dc        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr25\libgcc.a(_exit.o)
  *(.fini0)
-                0x00001780                _etext = .
+                0x000018e0                _etext = .
 
-.data           0x00800060       0x3e load address 0x00001780
+.data           0x00800060       0x52 load address 0x000018e0
                 0x00800060                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -730,61 +771,65 @@ END GROUP
  *(.rodata)
  *(.rodata*)
  .rodata.str1.1
-                0x00800060       0x3e main.o
-                                 0x48 (size before relaxing)
+                0x00800060       0x51 main.o
+                                 0x5b (size before relaxing)
  *(.gnu.linkonce.r*)
-                0x0080009e                . = ALIGN (0x2)
-                0x0080009e                _edata = .
-                0x0080009e                PROVIDE (__data_end, .)
+                0x008000b2                . = ALIGN (0x2)
+ *fill*         0x008000b1        0x1 
+                0x008000b2                _edata = .
+                0x008000b2                PROVIDE (__data_end, .)
 
-.bss            0x0080009e       0x59
-                0x0080009e                PROVIDE (__bss_start, .)
+.bss            0x008000b2       0x61
+                0x008000b2                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
- .bss.pos_y     0x0080009e        0x1 ssd1306/ssd1306xled.o
-                0x0080009e                pos_y
- .bss.pos_x     0x0080009f        0x1 ssd1306/ssd1306xled.o
-                0x0080009f                pos_x
+ .bss.pos_y     0x008000b2        0x1 ssd1306/ssd1306xled.o
+                0x008000b2                pos_y
+ .bss.pos_x     0x008000b3        0x1 ssd1306/ssd1306xled.o
+                0x008000b3                pos_x
  *(COMMON)
- COMMON         0x008000a0       0x57 main.o
-                0x008000a0                btn_long_pressed
-                0x008000a1                avg_speed
-                0x008000a5                btn_pressed
-                0x008000a6                wheel_rotation_start_time
-                0x008000aa                ms
-                0x008000ae                wheel_pin_state
-                0x008000af                max_speed
-                0x008000b3                wheel_rpm
-                0x008000b5                wheel_length
-                0x008000b9                distance
-                0x008000bd                led_timer
-                0x008000c1                speed_arr_index
-                0x008000c2                wheel_rotation_counter
-                0x008000c3                speed_arr
-                0x008000e3                display_turned
-                0x008000e4                btn_timer
-                0x008000e8                display_timer
-                0x008000ec                wheel_rotation_started
-                0x008000ed                speed
-                0x008000f1                wheel_rotation_last_time
-                0x008000f5                led_turned
-                0x008000f6                display_menu
-                0x008000f7                PROVIDE (__bss_end, .)
-                0x00001780                __data_load_start = LOADADDR (.data)
-                0x000017be                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x008000b4       0x5f main.o
+                0x008000b4                btn_long_pressed
+                0x008000b5                distance_saved
+                0x008000b6                period_distance
+                0x008000ba                avg_speed
+                0x008000be                btn_pressed
+                0x008000bf                wheel_rotation_start_time
+                0x008000c3                ms
+                0x008000c7                max_speed
+                0x008000cb                wheel_rpm
+                0x008000cd                wheel_length
+                0x008000d1                distance
+                0x008000d5                led_timer
+                0x008000d9                speed_arr_index
+                0x008000da                wheel_rotation_counter
+                0x008000db                speed_arr
+                0x008000fb                display_turned
+                0x008000fc                btn_timer
+                0x00800100                display_timer
+                0x00800104                total_distance
+                0x00800108                wheel_rotation_started
+                0x00800109                speed
+                0x0080010d                wheel_rotation_last_time
+                0x00800111                led_turned
+                0x00800112                display_menu
+                0x00800113                PROVIDE (__bss_end, .)
+                0x000018e0                __data_load_start = LOADADDR (.data)
+                0x00001932                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x008000f7        0x0
+.noinit         0x00800113        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x008000f7                _end = .
+                0x00800113                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
-.eeprom         0x00810000        0x1
+.eeprom         0x00810000        0x5
  *(.eeprom*)
- .eeprom        0x00810000        0x1 main.o
-                0x00810000                EEPROM_WHEEL_DIAMETER
-                0x00810001                __eeprom_end = .
+ .eeprom        0x00810000        0x5 main.o
+                0x00810000                EEPROM_TOTAL_DISTANCE
+                0x00810004                EEPROM_WHEEL_DIAMETER
+                0x00810005                __eeprom_end = .
 
 .fuse
  *(.fuse)
@@ -846,64 +891,84 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x190
+.debug_aranges  0x00000000      0x218
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x80 main.o
+                0x00000000       0x88 main.o
  .debug_aranges
-                0x00000080       0x70 ssd1306/ssd1306xled.o
+                0x00000088       0x70 ssd1306/ssd1306xled.o
  .debug_aranges
-                0x000000f0       0x60 ssd1306/ssd1306xledtx.o
+                0x000000f8       0x60 ssd1306/ssd1306xledtx.o
  .debug_aranges
-                0x00000150       0x20 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_byte.o)
+                0x00000158       0x20 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_byte.o)
  .debug_aranges
-                0x00000170       0x20 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eewr_byte.o)
+                0x00000178       0x20 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_dword.o)
+ .debug_aranges
+                0x00000198       0x20 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_dword.o)
+ .debug_aranges
+                0x000001b8       0x20 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eewr_byte.o)
+ .debug_aranges
+                0x000001d8       0x20 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_block.o)
+ .debug_aranges
+                0x000001f8       0x20 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_byte.o)
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x1d2e
+.debug_info     0x00000000     0x2100
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x420 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25/crtattiny85.o
- .debug_info    0x00000420      0xb5e main.o
- .debug_info    0x00000f7e      0x5ad ssd1306/ssd1306xled.o
- .debug_info    0x0000152b      0x6d1 ssd1306/ssd1306xledtx.o
- .debug_info    0x00001bfc       0x99 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_byte.o)
- .debug_info    0x00001c95       0x99 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eewr_byte.o)
+ .debug_info    0x00000420      0xcc7 main.o
+ .debug_info    0x000010e7      0x5ad ssd1306/ssd1306xled.o
+ .debug_info    0x00001694      0x6d1 ssd1306/ssd1306xledtx.o
+ .debug_info    0x00001d65       0x99 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_byte.o)
+ .debug_info    0x00001dfe       0x9a C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_dword.o)
+ .debug_info    0x00001e98       0x9b C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_dword.o)
+ .debug_info    0x00001f33       0x99 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eewr_byte.o)
+ .debug_info    0x00001fcc       0x9a C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_block.o)
+ .debug_info    0x00002066       0x9a C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_byte.o)
 
-.debug_abbrev   0x00000000      0xab7
+.debug_abbrev   0x00000000      0xaf8
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x3e8 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25/crtattiny85.o
- .debug_abbrev  0x000003e8      0x312 main.o
- .debug_abbrev  0x000006fa      0x1bd ssd1306/ssd1306xled.o
- .debug_abbrev  0x000008b7      0x1d8 ssd1306/ssd1306xledtx.o
- .debug_abbrev  0x00000a8f       0x14 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_byte.o)
- .debug_abbrev  0x00000aa3       0x14 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eewr_byte.o)
+ .debug_abbrev  0x000003e8      0x303 main.o
+ .debug_abbrev  0x000006eb      0x1bd ssd1306/ssd1306xled.o
+ .debug_abbrev  0x000008a8      0x1d8 ssd1306/ssd1306xledtx.o
+ .debug_abbrev  0x00000a80       0x14 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_byte.o)
+ .debug_abbrev  0x00000a94       0x14 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_dword.o)
+ .debug_abbrev  0x00000aa8       0x14 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_dword.o)
+ .debug_abbrev  0x00000abc       0x14 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eewr_byte.o)
+ .debug_abbrev  0x00000ad0       0x14 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_block.o)
+ .debug_abbrev  0x00000ae4       0x14 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_byte.o)
 
-.debug_line     0x00000000      0xed7
+.debug_line     0x00000000     0x119e
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000       0xf1 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25/crtattiny85.o
- .debug_line    0x000000f1      0x6a9 main.o
- .debug_line    0x0000079a      0x2af ssd1306/ssd1306xled.o
- .debug_line    0x00000a49      0x376 ssd1306/ssd1306xledtx.o
- .debug_line    0x00000dbf       0x7a C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_byte.o)
- .debug_line    0x00000e39       0x9e C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eewr_byte.o)
+ .debug_line    0x000000f1      0x72c main.o
+ .debug_line    0x0000081d      0x2af ssd1306/ssd1306xled.o
+ .debug_line    0x00000acc      0x376 ssd1306/ssd1306xledtx.o
+ .debug_line    0x00000e42       0x7a C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_byte.o)
+ .debug_line    0x00000ebc       0x68 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_dword.o)
+ .debug_line    0x00000f24       0x7b C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_dword.o)
+ .debug_line    0x00000f9f       0x9e C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eewr_byte.o)
+ .debug_line    0x0000103d       0xab C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eerd_block.o)
+ .debug_line    0x000010e8       0xb6 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25\libattiny85.a(eeupd_byte.o)
 
-.debug_frame    0x00000000      0x440
+.debug_frame    0x00000000      0x450
  *(.debug_frame)
- .debug_frame   0x00000000      0x190 main.o
- .debug_frame   0x00000190      0x10c ssd1306/ssd1306xled.o
- .debug_frame   0x0000029c      0x1a4 ssd1306/ssd1306xledtx.o
+ .debug_frame   0x00000000      0x1a0 main.o
+ .debug_frame   0x000001a0      0x10c ssd1306/ssd1306xled.o
+ .debug_frame   0x000002ac      0x1a4 ssd1306/ssd1306xledtx.o
 
-.debug_str      0x00000000      0x71a
+.debug_str      0x00000000      0x7a4
  *(.debug_str)
  .debug_str     0x00000000      0x169 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATtiny_DFP/1.3.229/gcc/dev/attiny85/avr25/crtattiny85.o
- .debug_str     0x00000169      0x45f main.o
-                                0x4ec (size before relaxing)
- .debug_str     0x000005c8       0xb7 ssd1306/ssd1306xled.o
+ .debug_str     0x00000169      0x4b0 main.o
+                                0x546 (size before relaxing)
+ .debug_str     0x00000619       0xf0 ssd1306/ssd1306xled.o
                                 0x268 (size before relaxing)
- .debug_str     0x0000067f       0x9b ssd1306/ssd1306xledtx.o
-                                0x2b2 (size before relaxing)
+ .debug_str     0x00000709       0x9b ssd1306/ssd1306xledtx.o
+                                0x296 (size before relaxing)
 
 .debug_loc      0x00000000     0x15a1
  *(.debug_loc)
@@ -929,11 +994,11 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000      0x120
+.debug_ranges   0x00000000      0x128
  *(.debug_ranges)
- .debug_ranges  0x00000000       0x70 main.o
- .debug_ranges  0x00000070       0x60 ssd1306/ssd1306xled.o
- .debug_ranges  0x000000d0       0x50 ssd1306/ssd1306xledtx.o
+ .debug_ranges  0x00000000       0x78 main.o
+ .debug_ranges  0x00000078       0x60 ssd1306/ssd1306xled.o
+ .debug_ranges  0x000000d8       0x50 ssd1306/ssd1306xledtx.o
 
 .debug_macro
  *(.debug_macro)
